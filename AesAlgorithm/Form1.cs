@@ -25,13 +25,9 @@ namespace AesAlgorithm
 
             byte[] cipherText = AesImplementation.Encrypt(clearText, key);
 
-            string finalTeksti = Encoding.UTF8.GetString(cipherText);
+            txtOutput.Text = Convert.ToBase64String(cipherText);
 
-            txtOutput.Text = finalTeksti;
-
-            var someresult = AesImplementation.Decrypt(cipherText, key);
-
-            txtHexOutput.Text = Encoding.UTF8.GetString(someresult);
+            txtHexOutput.Text = BitConverter.ToString(cipherText);
 
             //            if (ValidateFields())
             //            {
@@ -54,6 +50,20 @@ namespace AesAlgorithm
             //                    txtDalja.Text = "Gabim " + ex.ToString();
             //                }
             //            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // Hard coded key
+            var key = Encoding.UTF8.GetBytes("1a25s8fe5dsg65ad"); //Rijndael.Create().Key;
+
+            byte[] cipher = Convert.FromBase64String(txtInput.Text);
+
+            byte[] plainText = AesImplementation.Decrypt(cipher, key);
+
+            txtOutput.Text = Encoding.UTF8.GetString(plainText);
+
+            txtHexOutput.Text = BitConverter.ToString(plainText);
         }
 
         private bool ValidateFields()
@@ -101,7 +111,7 @@ namespace AesAlgorithm
                             lblValidateTekstin.Text =
                                 "Gjatesia e karaktereve per qelesin  256 bitesh \n eshte 32 karaktere. Shikoni me kujdes te dhenat!";
                         }
-                        
+
                         break;
                 }
             }

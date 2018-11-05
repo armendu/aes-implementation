@@ -4,6 +4,8 @@ namespace AesAlgorithm
 {
     class AesImplementation
     {
+        public static byte[] CipherTextBytes { get; private set; }
+
         private static int _nb, _nk, _nr;
         private static byte[][] _w;
 
@@ -225,6 +227,22 @@ namespace AesAlgorithm
             return state;
         }
 
+        private static byte[][] MixColumns(byte[][] s)
+        {
+            int[] sp = new int[4];
+            byte b02 = (byte)0x02, b03 = (byte)0x03;
+            for (int c = 0; c < 4; c++)
+            {
+                sp[0] = FFMul(b02, s[0][c]) ^ FFMul(b03, s[1][c]) ^ s[2][c] ^ s[3][c];
+                sp[1] = s[0][c] ^ FFMul(b02, s[1][c]) ^ FFMul(b03, s[2][c]) ^ s[3][c];
+                sp[2] = s[0][c] ^ s[1][c] ^ FFMul(b02, s[2][c]) ^ FFMul(b03, s[3][c]);
+                sp[3] = FFMul(b03, s[0][c]) ^ s[1][c] ^ s[2][c] ^ FFMul(b02, s[3][c]);
+                for (int i = 0; i < 4; i++) s[i][c] = (byte)(sp[i]);
+            }
+
+            return s;
+        }
+
         private static byte[][] InvMixColumns(byte[][] s)
         {
             int[] sp = new int[4];
@@ -238,22 +256,6 @@ namespace AesAlgorithm
 
                 for (int i = 0; i < 4; i++)
                     s[i][c] = (byte)(sp[i]);
-            }
-
-            return s;
-        }
-
-        private static byte[][] MixColumns(byte[][] s)
-        {
-            int[] sp = new int[4];
-            byte b02 = (byte)0x02, b03 = (byte)0x03;
-            for (int c = 0; c < 4; c++)
-            {
-                sp[0] = FFMul(b02, s[0][c]) ^ FFMul(b03, s[1][c]) ^ s[2][c] ^ s[3][c];
-                sp[1] = s[0][c] ^ FFMul(b02, s[1][c]) ^ FFMul(b03, s[2][c]) ^ s[3][c];
-                sp[2] = s[0][c] ^ s[1][c] ^ FFMul(b02, s[2][c]) ^ FFMul(b03, s[3][c]);
-                sp[3] = FFMul(b03, s[0][c]) ^ s[1][c] ^ s[2][c] ^ FFMul(b02, s[3][c]);
-                for (int i = 0; i < 4; i++) s[i][c] = (byte)(sp[i]);
             }
 
             return s;
@@ -389,6 +391,7 @@ namespace AesAlgorithm
                 Array.Copy(bloc, 0, tmp, i - 16, bloc.Length);
             }
 
+            CipherTextBytes = tmp;
             return tmp;
         }
 
