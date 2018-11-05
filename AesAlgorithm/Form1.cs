@@ -13,110 +13,111 @@ namespace AesAlgorithm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ddlGjatesiaCelesit.SelectedIndex = 0;
+            ddlKeyLength.SelectedIndex = 0;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var clearText = Encoding.UTF8.GetBytes(txtInput.Text);
+            if (ValidateFields())
+            {
+                try
+                {
+                    lblErrorMessage.Visible = false;
 
-            // Hard coded key
-            var key = Encoding.UTF8.GetBytes("1a25s8fe5dsg65ad"); //Rijndael.Create().Key;
+                    var clearText = Encoding.UTF8.GetBytes(txtInput.Text);
 
-            byte[] cipherText = AesImplementation.Encrypt(clearText, key);
+                    // Get the key
+                    var key = Encoding.UTF8.GetBytes(txtKey.Text); //Rijndael.Create().Key;
 
-            txtOutput.Text = Convert.ToBase64String(cipherText);
+                    byte[] cipherText = AesImplementation.Encrypt(clearText, key);
 
-            txtHexOutput.Text = BitConverter.ToString(cipherText);
+                    txtOutput.Text = Convert.ToBase64String(cipherText);
 
-            //            if (ValidateFields())
-            //            {
-            //                try
-            //                {
-            //                    lblValidateTekstin.Visible = false;
-            //                    var enkriptim = radioEncrypt.Checked;
-            //                    var rezultati = enkriptim
-            //                        ? AesAlgorithm.EncryptString(txtTekstiHyres.Text, txtCelesi.Text)
-            //                        : AesAlgorithm.DecryptString(txtTekstiHyres.Text, txtCelesi.Text);
-            //
-            //                    txtDalja.Text = rezultati;
-            //                    var bajtat = enkriptim
-            //                  ? Convert.FromBase64String(rezultati)
-            //                  : Encoding.UTF8.GetBytes(rezultati);
-            //                    RezultatiHex.Text = BitConverter.ToString(bajtat);
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    txtDalja.Text = "Gabim " + ex.ToString();
-            //                }
-            //            }
+                    txtHexOutput.Text = BitConverter.ToString(cipherText);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show($@"An error occured: {exception}");
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            // Hard coded key
-            var key = Encoding.UTF8.GetBytes("1a25s8fe5dsg65ad"); //Rijndael.Create().Key;
+            if (ValidateFields())
+            {
+                try
+                {
+                    lblErrorMessage.Visible = false;
 
-            byte[] cipher = Convert.FromBase64String(txtInput.Text);
+                    byte[] cipherText = Convert.FromBase64String(txtInput.Text);
 
-            byte[] plainText = AesImplementation.Decrypt(cipher, key);
+                    // Get the key
+                    var key = Encoding.UTF8.GetBytes(txtKey.Text);
 
-            txtOutput.Text = Encoding.UTF8.GetString(plainText);
+                    // Decrypt the cipher text
+                    byte[] plainText = AesImplementation.Decrypt(cipherText, key);
 
-            txtHexOutput.Text = BitConverter.ToString(plainText);
+                    // Set the right output
+                    txtOutput.Text = Encoding.UTF8.GetString(plainText);
+                    txtHexOutput.Text = BitConverter.ToString(plainText);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show($@"An error occured: {exception}");
+                }
+            }
         }
 
         private bool ValidateFields()
         {
-            bool validoData = true;
-            if (ddlGjatesiaCelesit.SelectedIndex == 0)
+            if (ddlKeyLength.SelectedIndex == 0)
             {
-                validoData = false;
-                ddlGjatesiaCelesit.Focus();
-                lblValidateTekstin.Visible = true;
-                lblValidateTekstin.Text = "Ploteso gjatesin e qelesit";
-            }
-            else if (ddlGjatesiaCelesit.SelectedIndex != 0)
-            {
-                switch (ddlGjatesiaCelesit.SelectedItem)
-                {
-                    case "128":
-                        if (txtKey.TextLength != 16)
-                        {
-                            validoData = false;
-                            txtKey.Focus();
-                            lblValidateTekstin.Visible = true;
-                            lblValidateTekstin.Text =
-                                "Gjatesia e karaktereve per qelesin 128 bitesh\n eshte 16 karaktere. Shikoni me kujdes te dhenat!";
-                        }
+                ddlKeyLength.Focus();
+                lblErrorMessage.Visible = true;
+                lblErrorMessage.Text = @"Please select the key length";
 
-                        break;
-                    case "192":
-                        if (txtKey.TextLength != 24)
-                        {
-                            validoData = false;
-                            txtKey.Focus();
-                            lblValidateTekstin.Visible = true;
-                            lblValidateTekstin.Text =
-                                "Gjatesia e karaktereve per qelesin 192 bitesh \n eshte 24 karaktere. Shikoni me kujdes te dhenat!";
-                        }
-
-                        break;
-                    case "256":
-                        if (txtKey.TextLength != 24)
-                        {
-                            validoData = false;
-                            txtKey.Focus();
-                            lblValidateTekstin.Visible = true;
-                            lblValidateTekstin.Text =
-                                "Gjatesia e karaktereve per qelesin  256 bitesh \n eshte 32 karaktere. Shikoni me kujdes te dhenat!";
-                        }
-
-                        break;
-                }
+                return false;
             }
 
-            return validoData;
+            switch (ddlKeyLength.SelectedItem)
+            {
+                case "128":
+                    if (txtKey.TextLength != 16)
+                    {
+                        txtKey.Focus();
+                        lblErrorMessage.Visible = true;
+                        lblErrorMessage.Text =
+                            "Key length for a 128 bit key is 16 characters. \nPlease fill the form properly!";
+                        return false;
+                    }
+
+                    break;
+                case "192":
+                    if (txtKey.TextLength != 24)
+                    {
+                        txtKey.Focus();
+                        lblErrorMessage.Visible = true;
+                        lblErrorMessage.Text =
+                            "Key length for a 192 bit key is 24 characters. \nPlease fill the form properly!";
+                        return false;
+                    }
+
+                    break;
+                case "256":
+                    if (txtKey.TextLength != 32)
+                    {
+                        txtKey.Focus();
+                        lblErrorMessage.Visible = true;
+                        lblErrorMessage.Text =
+                            "Key length for a 256 bit key is 32 characters. \nPlease fill the form properly!";
+                        return false;
+                    }
+
+                    break;
+            }
+
+            return true;
         }
     }
 }
