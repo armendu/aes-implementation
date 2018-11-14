@@ -370,11 +370,7 @@ namespace AesAlgorithm
 
             for (i = 0; i < inBytes.Length + length; i++)
             {
-                if (i > 0 && i % 16 == 0)
-                {
-                    bloc = EncryptBlock(bloc);
-                    Array.Copy(bloc, 0, tmp, i - 16, bloc.Length);
-                }
+               
 
                 if (i < inBytes.Length)
                     bloc[i % 16] = inBytes[i];
