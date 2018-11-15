@@ -60,6 +60,7 @@ namespace AesAlgorithm
 /*f*/        0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D
         };
 
+        //matrica e cila perdoret per substituim te bajteve gjate key expansion
         private static readonly int[] Rcon =
         {
             0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
@@ -95,11 +96,12 @@ namespace AesAlgorithm
         {
             byte[][] tmp = new byte[_nb * (_nr + 1)][];
 
-            // Initialize arrays
+            // Inicializimi i array
             for (int j = 0; j < _nk; j++)
                 tmp[j] = new byte[4];
 
             int i = 0;
+            //Krijimi i celesit per roundin e pare
             while (i < _nk)
             {
                 tmp[i][0] = key[i * 4];
@@ -110,6 +112,8 @@ namespace AesAlgorithm
             }
 
             i = _nk;
+
+            //Krijimi i celesave per roundet tjera, ku cdo e 4-ta kolone behet rotacion ne vete dhe zevendeson bajtat ne Rcon
             while (i < _nb * (_nr + 1))
             {
                 byte[] temp = new byte[4];
@@ -142,14 +146,14 @@ namespace AesAlgorithm
             return tmp;
         }
 
+       
         private static byte[] RotateWord(byte[] input)
         {
             byte[] tmp = new byte[input.Length];
-            tmp[0] = input[1];
+            tmp[0] = input[1];//zhvendosje -1
             tmp[1] = input[2];
             tmp[2] = input[3];
             tmp[3] = input[0];
-
             return tmp;
         }
 
@@ -169,6 +173,9 @@ namespace AesAlgorithm
 
             return tmp;
         }
+
+        
+        //Metoda per substituim te bajteve te state-it
 
         private static byte[][] SubBytes(byte[][] state)
         {
