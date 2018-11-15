@@ -75,21 +75,22 @@ namespace AesAlgorithm
             {
                 ddlKeyLength.Focus();
                 lblErrorMessage.Visible = true;
-                lblErrorMessage.Text = @"Please select the key length";
+                lblErrorMessage.ForeColor = System.Drawing.Color.Blue;
+                lblErrorMessage.Text = @"Zgjedhni gjatesine e celesit!";
 
                 return false;
             }
 
-            switch (ddlKeyLength.SelectedItem)
+            switch (ddlKeyLength.SelectedItem.ToString())
             {
+
                 case "128":
                     if (txtKey.TextLength != 16)
                     {
                         txtKey.Focus();
                         lblErrorMessage.Visible = true;
                         lblErrorMessage.Text =
-                            "Key length for a 128 bit key is 16 characters. \nPlease fill the form properly!";
-                        return false;
+                            "Duhet te shkruani 16 karaktere per celesin 128 bitesh!"; return false;
                     }
 
                     break;
@@ -99,8 +100,7 @@ namespace AesAlgorithm
                         txtKey.Focus();
                         lblErrorMessage.Visible = true;
                         lblErrorMessage.Text =
-                            "Key length for a 192 bit key is 24 characters. \nPlease fill the form properly!";
-                        return false;
+                            "Duhet te shkruani 24 karaktere per celesin 192 bitesh!"; return false;
                     }
 
                     break;
@@ -110,12 +110,12 @@ namespace AesAlgorithm
                         txtKey.Focus();
                         lblErrorMessage.Visible = true;
                         lblErrorMessage.Text =
-                            "Key length for a 256 bit key is 32 characters. \nPlease fill the form properly!";
-                        return false;
+                            "Duhet te shkruani 32 karaktere per celesin 256 bitesh!"; return false;
                     }
 
                     break;
             }
+
 
             return true;
         }
